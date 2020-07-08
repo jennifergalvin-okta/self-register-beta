@@ -1,0 +1,79 @@
+<div id="okta-login-container"></div>
+<script type="text/javascript">
+
+  var oktaSignIn = new OktaSignIn({
+      clientId: '{{client.id}}',
+      baseUrl: '{{client.issuer}}',
+      authScheme: 'SESSION',
+      /* See also: https://github.com/okta/okta-signin-widget#registration */
+      registration: {
+          parseSchema: function(schema, onSuccess, onFailure) {
+             // handle parseSchema callback
+             onSuccess(schema);
+          },
+          preSubmit: function (postData, onSuccess, onFailure) {
+             // handle preSubmit callback
+             onSuccess(postData);
+          },
+          postSubmit: function (response, onSuccess, onFailure) {
+              // handle postsubmit callback
+              onSuccess(response);
+          }
+      },
+      features: {
+          router: true,
+          registration: true,
+          securityImage: false,
+          autoPush: true
+      },
+      /* See also: https://developer.okta.com/code/javascript/okta_sign-in_widget.html#customization */
+      labels: {
+          'primaryauth.title': 'Example Okta Widget'
+      },
+      language: "en"
+,
+
+/* 
+      customButtons: [{
+  		title: 'Log in via Linked In',
+  		className: 'btn-customAuth',
+  		click: function() {
+    			// clicking on the button navigates to another page
+    			location.href = 'https://jgalvin.okta.com/oauth2/v1/authorize?idp=0oahy4s5yawnlC7dl0x7&client_id=GPYHMGsQRSvyAoQvZuWZ&response_type=id_token&response_mode=fragment&scope=openid&redirect_uri={{client.redirectUrl}}&state=alkdjfdlksafj&nonce=YakdljG76jo';
+  }
+      }]
+*/
+
+//LinkedIn (IDP ID)
+	idps:  [
+		{
+      		type: 'LINKEDIN',
+      		id: '0oa98psgy40uYe2xE356'
+    		}
+
+	]
+
+
+/* LinkedIn (OIDC App ID)
+	idps:  [{
+		{
+      		type: 'LINKEDIN',
+      		id: 'GPYHMGsQRSvyAoQvZuWZ'
+    		}
+
+	}]
+
+*/
+
+
+
+  });
+  oktaSignIn.renderEl(
+    { el: '#okta-login-container' },
+    function(res) {
+      if (res.status === 'SUCCESS') {
+        res.session.setCookieAndRedirect('{{client.redirectUrl}}');
+      }
+    }
+  );
+</script>
